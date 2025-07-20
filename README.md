@@ -2,6 +2,16 @@
 
 Here are some of my Fusion macros for Davinci Resolve or Fusion.
 
+### Install
+
+Download the .settings files and drag them into the following folder:
+
+Mac:
+```/Users/<UserName>/Library/Application Support/Blackmagic Design/Davinci Resolve/Fusion/Macros```
+
+Windwos:
+```C:\Users\<UserName>\AppData\Roaming\Blackmagic Design\DaVinci Resolve\Support\Fusion\Macros\```
+
 ## Edge Extended Lens Blur
 
 This macro extends the edges from outside of the masked area. This results in clean edges even with higher blur sizes.
