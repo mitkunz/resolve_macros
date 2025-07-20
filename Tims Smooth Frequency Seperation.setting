@@ -1,0 +1,204 @@
+{
+	Tools = ordered() {
+		Smooth_Freq_Sep = MacroOperator {
+			Inputs = ordered() {
+				Input1 = InstanceInput {
+					SourceOp = "c",
+					Source = "Detail",
+					Default = 0,
+				},
+				Input2 = InstanceInput {
+					SourceOp = "c",
+					Source = "Smooth",
+				},
+				MainInput2 = InstanceInput {
+					SourceOp = "PipeRouter2",
+					Source = "Input",
+				},
+				MainInput1 = InstanceInput {
+					SourceOp = "PipeRouter4",
+					Source = "Input",
+					Name = "Maske",
+				}
+			},
+			Outputs = {
+				MainOutput1 = InstanceOutput {
+					SourceOp = "PipeRouter1",
+					Source = "Output",
+				}
+			},
+			ViewInfo = GroupInfo { Pos = { 0, 0 } },
+			Tools = ordered() {
+				PipeRouter4 = PipeRouter {
+					Inputs = {
+						Comments = Input { Value = "Input Maske", }
+					},
+					ViewInfo = PipeRouterInfo { Pos = { -596.2, -56.8405 } },
+				},
+				c = Transform {
+					CtrlWZoom = false,
+					NameSet = true,
+					Inputs = {
+						Detail = Input { Value = 0.1, },
+						Smooth = Input { Value = 3.5, }
+					},
+					ViewInfo = OperatorInfo { Pos = { -456.203, -7.12523 } },
+					UserControls = ordered() {
+						Detail = {
+							LINKS_Name = "Detail",
+							LINKID_DataType = "Number",
+							INPID_InputControl = "SliderControl",
+							INP_Default = 0,
+							INP_Integer = false,
+							INP_MinScale = -1,
+							INP_MaxScale = 100,
+							INP_MinAllowed = -1,
+							INP_MaxAllowed = 1000000,
+						},
+						Smooth = {
+							LINKS_Name = "Smooth",
+							LINKID_DataType = "Number",
+							INPID_InputControl = "SliderControl",
+							INP_Integer = false,
+							INP_MinScale = 0,
+							INP_MaxScale = 100,
+							INP_MinAllowed = 0,
+							INP_MaxAllowed = 1000000,
+						}
+					}
+				},
+				ChannelBooleans1 = ChannelBoolean {
+					Inputs = {
+						Operation = Input { Value = 2, },
+						ToAlpha = Input { Value = 4, },
+						Background = Input {
+							SourceOp = "PipeRouter3",
+							Source = "Output",
+						},
+						Foreground = Input {
+							SourceOp = "BlurTrennung",
+							Source = "Output",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { -287.039, 108.877 } },
+				},
+				PipeRouter2 = PipeRouter {
+					Inputs = {
+						Comments = Input { Value = "Input Bild", }
+					},
+					ViewInfo = PipeRouterInfo { Pos = { -601.305, 41.9271 } },
+				},
+				Merge1 = Merge {
+					Inputs = {
+						EffectMask = Input {
+							SourceOp = "PipeRouter5",
+							Source = "Output",
+						},
+						Background = Input {
+							SourceOp = "PipeRouter2",
+							Source = "Output",
+						},
+						Foreground = Input {
+							SourceOp = "ChannelBooleans2",
+							Source = "Output",
+						},
+						PerformDepthMerge = Input { Value = 0, }
+					},
+					ViewInfo = OperatorInfo { Pos = { -115.687, 39.2756 } },
+				},
+				ChannelBooleans2 = ChannelBoolean {
+					Inputs = {
+						Operation = Input { Value = 1, },
+						ToAlpha = Input { Value = 4, },
+						Background = Input {
+							SourceOp = "ChannelBooleans1",
+							Source = "Output",
+						},
+						Foreground = Input {
+							SourceOp = "BlurRetouch",
+							Source = "Output",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { -113.499, 104.237 } },
+				},
+				BlurTrennung = Blur {
+					NameSet = true,
+					Inputs = {
+						Filter = Input { Value = FuID { "Fast Gaussian" }, },
+						XBlurSize = Input {
+							Value = 1.1,
+							Expression = "c.Detail+1",
+						},
+						Input = Input {
+							SourceOp = "PipeRouter3",
+							Source = "Output",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { -287.039, 153.289 } },
+				},
+				CleanPlate1 = CleanPLate {
+					Inputs = {
+						GrowEdges = Input { Value = 0.0333, },
+						InsideFill = Input { Value = 1, },
+						HoldTime = Input { Value = 23, },
+						["Garbage.Matte"] = Input {
+							SourceOp = "PipeRouter4",
+							Source = "Output",
+						},
+						["Garbage.MaskNest"] = Input { Value = 1, },
+						["Garbage.MaskInverted"] = Input { Value = 1, },
+						Input = Input {
+							SourceOp = "PipeRouter2",
+							Source = "Output",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { -507.244, 156.604 } },
+				},
+				PipeRouter3 = PipeRouter {
+					Inputs = {
+						Input = Input {
+							SourceOp = "CleanPlate1",
+							Source = "Output",
+						}
+					},
+					ViewInfo = PipeRouterInfo { Pos = { -421.204, 159.255 } },
+				},
+				BlurRetouch = Blur {
+					NameSet = true,
+					Inputs = {
+						Filter = Input { Value = FuID { "Fast Gaussian" }, },
+						XBlurSize = Input {
+							Value = 4.6,
+							Expression = "c.Detail+c.Smooth+1",
+						},
+						Input = Input {
+							SourceOp = "PipeRouter3",
+							Source = "Output",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { -287.769, 203.667 } },
+				},
+				PipeRouter5 = PipeRouter {
+					Inputs = {
+						Input = Input {
+							SourceOp = "PipeRouter4",
+							Source = "Output",
+						}
+					},
+					ViewInfo = PipeRouterInfo { Pos = { -116.415, -58.1662 } },
+				},
+				PipeRouter1 = PipeRouter {
+					Inputs = {
+						Input = Input {
+							SourceOp = "Merge1",
+							Source = "Output",
+						},
+						Comments = Input { Value = "Output Bild", }
+					},
+					ViewInfo = PipeRouterInfo { Pos = { 111.81, 37.287 } },
+				}
+			},
+		}
+	},
+	ActiveTool = "Smooth_Freq_Sep"
+}

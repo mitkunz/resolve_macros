@@ -1,0 +1,137 @@
+{
+	Tools = ordered() {
+		TimsLensBlurEdgeExtended = MacroOperator {
+			Inputs = ordered() {
+				Input1 = InstanceInput {
+					SourceOp = "LensBlur1",
+					Source = "BlurStrength",
+					Default = 4,
+				},
+				Input2 = InstanceInput {
+					SourceOp = "CleanPlate1",
+					Source = "GrowEdges",
+					Default = 0.05,
+				},
+				MainInput2 = InstanceInput {
+					SourceOp = "PipeRouter1",
+					Source = "Input",
+					Name = "Media In",
+				},
+				MainInput1 = InstanceInput {
+					SourceOp = "PipeRouter2",
+					Source = "Input",
+					Name = "Mask",
+				}
+			},
+			Outputs = {
+				MainOutput1 = InstanceOutput {
+					SourceOp = "PipeRouter3",
+					Source = "Output",
+					Name = "Media Out",
+				}
+			},
+			ViewInfo = GroupInfo { Pos = { 0, 0 } },
+			Tools = ordered() {
+				PipeRouter2 = PipeRouter {
+					Inputs = {
+						Comments = Input { Value = "maske", }
+					},
+					ViewInfo = PipeRouterInfo { Pos = { 55, -82.5 } },
+				},
+				LensBlur1 = ofx.com.blackmagicdesign.resolvefx.LensBlur {
+					Inputs = {
+						ApplyMaskInverted = Input { Value = 1, },
+						Source = Input {
+							SourceOp = "CleanPlate1",
+							Source = "Output",
+						},
+						shapeGroup = Input { Value = 1, },
+						shapeClass = Input { Value = FuID { "SHAPE_CLASS_REAL" }, },
+						ShapeType = Input { Value = FuID { "LENS_SHAPE_TYPE_HEXAGON" }, },
+						creativeShape = Input { Value = FuID { "LENS_SHAPE_TYPE_HEART" }, },
+						previewShape = Input { Value = 0, },
+						speedGroup = Input { Value = 0, },
+						processingRes = Input { Value = FuID { "PROCESSING_RESOLUTION_FULL" }, },
+						horizontalCrop = Input { Value = 0, },
+						verticalCrop = Input { Value = 0, },
+						isBlurAlpha = Input { Value = 1, },
+						controlsGroup = Input { Value = 1, },
+						BlurStrength = Input { Value = 4, },
+						userShapeScale = Input { Value = 1, },
+						BladeCurvature = Input { Value = 0, },
+						Rotation = Input { Value = 0, },
+						Anamorphism = Input { Value = 1, },
+						ChromaShift = Input { Value = 0, },
+						HighlightAmount = Input { Value = 0.349999994039536, },
+						apodization = Input { Value = 0, },
+						catadioptric = Input { Value = 0, },
+						blendGroup = Input { Value = 0, },
+						blendIn = Input { Value = 1, },
+						blend = Input { Value = 0, },
+						ignoreContentShape = Input { Value = 0, },
+						legacyIsProcessRGBOnly = Input { Value = 0, },
+						IsNoTemporalFramesReqd = Input { Value = 0, },
+						refreshTrigger = Input { Value = 1, },
+						srcProcessingAlphaMode = Input { Value = 1, },
+						dstProcessingAlphaMode = Input { Value = 1, },
+						resolvefxVersion = Input { Value = "2.0", }
+					},
+					ViewInfo = OperatorInfo { Pos = { 330, -16.5 } },
+				},
+				CleanPlate1 = CleanPLate {
+					Inputs = {
+						High = Input { Value = 1, },
+						GrowEdges = Input { Value = 0.05, },
+						HoldTime = Input { Value = 31, },
+						["Garbage.Matte"] = Input {
+							SourceOp = "PipeRouter2",
+							Source = "Output",
+						},
+						Input = Input {
+							SourceOp = "PipeRouter1",
+							Source = "Output",
+						}
+					},
+					ViewInfo = OperatorInfo { Pos = { 220, -16.5 } },
+				},
+				Merge1 = Merge {
+					CtrlWZoom = false,
+					Inputs = {
+						EffectMask = Input {
+							SourceOp = "PipeRouter2",
+							Source = "Output",
+						},
+						ApplyMaskInverted = Input { Value = 1, },
+						Background = Input {
+							SourceOp = "PipeRouter1",
+							Source = "Output",
+						},
+						Foreground = Input {
+							SourceOp = "LensBlur1",
+							Source = "Output",
+						},
+						PerformDepthMerge = Input { Value = 0, }
+					},
+					ViewInfo = OperatorInfo { Pos = { 220, 49.5 } },
+				},
+				PipeRouter1 = PipeRouter {
+					Inputs = {
+						Comments = Input { Value = "media in", }
+					},
+					ViewInfo = PipeRouterInfo { Pos = { 55, 49.5 } },
+				},
+				PipeRouter3 = PipeRouter {
+					Inputs = {
+						Input = Input {
+							SourceOp = "Merge1",
+							Source = "Output",
+						},
+						Comments = Input { Value = "media out", }
+					},
+					ViewInfo = PipeRouterInfo { Pos = { 495, 49.5 } },
+				}
+			},
+		}
+	},
+	ActiveTool = "TimsLensBlurEdgeExtended"
+}
